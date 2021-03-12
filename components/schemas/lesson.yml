@@ -1,0 +1,111 @@
+Lesson:
+  type: object
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    lessonImageUrl:
+      type: string
+    lessonDesc:
+      type: string
+    status:
+      type: string
+      enum: [DONE, LEARNING, LOCKED]
+
+LessonDetails:
+  type: object
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    lessonDesc:
+      type: string
+    resources:
+      type: array
+      items:
+        $ref: "#/LessonResource"
+    quizzes:
+      type: array
+      items:
+        $ref: "./quiz.yml#/Quiz"
+  example:
+    id: 1
+    name: "UNIT 1: MY NEW SCHOOL"
+    lessonDesc: A special day
+    resources:
+      - resourceType: VOCABULARY
+        contents:
+          - vocabulary: physics
+            vocabType: (noun)
+            pronounce: "['fiziks]"
+            meaning: vat ly hoc
+      - resourceType: GRAMMAR
+        contents:
+          - title: The present simple
+            subContent:
+              [
+                Positive,
+                I/ you/ we/ they + V (work/ study),
+                He/ she/ it + V-s/ V-es (works/ studies),
+              ]
+      - resourceType: REMEMBER
+        contents:
+          [
+            "The present simple verbs with he/ she/ it need an s/es",
+            "When something often happens or is fixed: the present simple",
+            "When something is happening now: the present continuous",
+          ]
+      - resourceType: VIDEO
+        contents:
+          [
+            "https://www.youtube.com/watch?v=REKHhDWN-s",
+            "https://www.youtube.com/watch?v=REKHhDWN-s",
+            "https://www.youtube.com/watch?v=REKHhDWN-s",
+          ]
+    quizzes:
+      - id: 1
+        name: exercise 21
+      - id: 2
+        name: exercise 22
+
+LessonResource:
+  type: object
+  properties:
+    resourceType:
+      type: string
+      enum: ["VOCABULARY", REMEMBER, GRAMMAR, VIDEO]
+    contents:
+      type: array
+      items:
+        oneOf:
+          - $ref: "#/VocabularyContent"
+          - $ref: "#/GrammarContent"
+          - $ref: "#/RememberContent"
+
+VocabularyContent:
+  type: object
+  properties:
+    vocabulary:
+      type: string
+    vocabType:
+      type: string
+    pronounce:
+      type: string
+    meaning:
+      type: string
+
+GrammarContent:
+  type: object
+  properties:
+    title:
+      type: string
+    subContent:
+      type: array
+      items:
+        type: string
+
+RememberContent:
+  type: string
+  example: When something is happening now the present continuous

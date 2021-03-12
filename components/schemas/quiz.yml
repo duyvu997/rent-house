@@ -1,0 +1,81 @@
+Quiz:
+  type: object
+  properties:
+    name:
+      type: string
+
+QuizSubmitForm:
+  type: object
+  properties:
+    averageScore:
+      type: number
+    ingredientsScore:
+      type: array
+      items:
+        type: object
+        properties:
+          ingredientType:
+            type: "string"
+            enum: [MATCHING, TRUE_OR_FALSE, COMPLETE_SENTENCE, CHOOSE_ANSWER]
+          ingredientScore:
+            type: number
+  example:
+    - tagName: ALL
+      result: []
+    - tagName: NEWEST
+      result: []
+    - tagName: POPULAR
+      result: []
+    - tagName: BY-USER
+      result: []
+
+QuizDetails:
+  type: object
+  properties:
+    title:
+      type: string
+    duration:
+      type: number
+      description: time in seconds
+    history:
+      type: array
+      items:
+        type: object
+        properties:
+          timestamp:
+            type: string
+          completedPercent:
+            type: number
+          status:
+            type: string
+            enum: [UP, DOWN]
+    questions:
+      type: array
+      items:
+        type: object
+        properties:
+          questionType:
+            type: string
+            enum: [MATCHING, TRUE_OR_FALSE, COMPLETE_SENTENCE, CHOOSE_ANSWER]
+          questionTitle:
+            type: string
+          questionDescription:
+            type: string
+  example:
+    title: Match the words with the school things
+    duration: 3600
+    history:
+      - timestamp: '2020-11-11 13:40:58'
+        completedPercent: 100
+        status: UP
+      - timestamp: '2020-11-11 14:40:58'
+        completedPercent: 90
+        status: UP
+      - timestamp: '2020-11-11 15:40:58'
+        completedPercent: 80
+        status: UP
+    questions:
+      - questionType: 'MATCHING'
+        questionTitle: ''
+        questionDescription: Listen and choose correct answers
+

@@ -1,0 +1,43 @@
+User:
+  type: "object"
+  properties:
+    id:
+      type: "integer"
+      format: "int64"
+    username:
+      type: "string"
+    birthday:
+      type: "string"
+    name:
+      type: "string"
+    email:
+      type: "string"
+    password:
+      type: "string"
+    phone:
+      type: "string"
+    avatarUrl:
+      type: "string"
+      description: "example: https://orange-juice.com/uploads/2017/06/gg-1.jpg"
+    gender:
+      type: "string"
+    childrenLinked:
+      type: "array"
+      items:
+        type: "string"
+    userRole:
+      type: "integer"
+      format: "int32"
+      description: "Admin - Parent - Children"
+
+ChildrenUsers:
+  type: array
+  items:
+    type: object
+    properties:
+      username:
+        type: string
+      name:
+        type: string
+      avatarUrl:
+        type: string

@@ -1,0 +1,377 @@
+---
+openapi: "3.0.0"
+info:
+  title: "Swagger Orange Juice"
+  version: "1.0.0"
+  description: "This is a APIs of Orange-Juice e-learning server."
+servers:
+  - url: https://orangejuicev2.herokuapp.com
+tags:
+  - name: "User"
+  - name: "Course"
+  - name: "Quiz"
+  - name: "Auth"
+  - name: "Lesson"
+paths:
+  /verify-code:
+    post:
+      tags:
+        - "Auth"
+      summary: "Submit code to verify user by username."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyCodeBody"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+  /users/{username}/children:
+    get:
+      tags:
+        - "User"
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      summary: Get children of this user.
+      responses:
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      security:
+        - bearerAuth: []
+  /users/children:
+    get:
+      tags:
+        - "User"
+      summary: Get username and avatar of all children users.
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChildrenUsers"
+  /users:
+    get:
+      tags:
+        - "User"
+      summary: "Get user's information"
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - "User"
+      summary: "Update user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          description: "name that need to be updated"
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        description: "Updated user object"
+        required: true
+      responses:
+        400:
+          description: "Invalid user supplied"
+        404:
+          description: "User not found"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - "User"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          description: "The name that needs to be deleted"
+          required: true
+      responses:
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - "User"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        description: "Created user"
+        required: true
+      responses:
+        default:
+          description: "successful operation"
+  /users/login:
+    post:
+      tags:
+        - "User"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      requestBody:
+        required: true
+        description: "Login user input"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+              example:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcm5hbWUiOiJqb2huMDkwOSIsImlhdCI6MTUxNjIzOTAyMn0.aj5KcumubmGe3Twtm7vLWbe7Ljt806Hj_OmqVsbjGVU \
+                Please decode for more information: using https://jwt.io/'
+        400:
+          description: "Invalid username/password supplied"
+  /users/logout:
+    post:
+      tags:
+        - "User"
+      summary: "Logs out current logged in user session"
+      description: ""
+      responses:
+        default:
+          description: "successful operation"
+      deprecated: true
+  /courses:
+    get:
+      tags:
+        - "Course"
+      summary: Get list of courses by each tags
+      parameters:
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - in: query
+          name: by-user
+          schema:
+            type: boolean
+          required: false
+          description: "Get user name in token then find all courses of user."
+        - in: query
+          name: popular
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag popular."
+        - in: query
+          name: newest
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag newest"
+        - in: query
+          name: all
+          schema:
+            type: boolean
+          required: false
+          description: "Get courses with tag all"
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoursesResponse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /courses/{courseId}:
+    get:
+      tags:
+        - "Course"
+      summary: Get course details by ID
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the course to get
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseDetails"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /lessons/{lessonId}:
+    get:
+      tags:
+        - "Lesson"
+      summary: Get lesson details by ID
+      parameters:
+        - in: path
+          name: lessonId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the lesson to get
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LessonDetails"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /quizzes/submit:
+    post:
+      summary: Submit quiz result to server
+      tags:
+        - "Quiz"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuizSubmitForm"
+      responses:
+        204:
+          description: "successful operation - No content"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+  /quizzes/{quizId}:
+    get:
+      tags:
+        - "Quiz"
+      summary: Get quiz details
+      parameters:
+        - in: path
+          name: quizId
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the quiz to get
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuizDetails"
+        400:
+          description: "Bad request"
+        404:
+          description: "Courses not found"
+components:
+  #------------------------------------------------------------------#
+  schemas:
+    ##------------------------
+    User:
+      $ref: "./components/schemas/user.yml#/User"
+    ChildrenUsers:
+      $ref: "./components/schemas/user.yml#/ChildrenUsers"
+    ##------------------------
+    Course:
+      $ref: "./components/schemas/course.yml#/Course"
+    GeneralCourse:
+      $ref: "./components/schemas/course.yml#/GeneralCourse"
+    PersonalCourse:
+      $ref: "./components/schemas/course.yml#/PersonalCourse"
+    CoursesResponse:
+      $ref: "./components/schemas/course.yml#/CoursesResponse"
+    CourseDetails:
+      $ref: "./components/schemas/course.yml#/CourseDetails"
+    ##------------------------
+    Lesson:
+      $ref: "./components/schemas/lesson.yml#/Lesson"
+    LessonDetails:
+      $ref: "./components/schemas/lesson.yml#/LessonDetails"
+    LessonResource:
+      $ref: "./components/schemas/lesson.yml#/LessonResource"
+    ##------------------------
+    Quiz:
+      $ref: "./components/schemas/quiz.yml#/Quiz"
+    QuizSubmitForm:
+      $ref: "./components/schemas/quiz.yml#/QuizSubmitForm"
+    QuizDetails:
+      $ref: "./components/schemas/quiz.yml#/QuizDetails"
+    ##------------------------
+    VerifyCodeBody:
+      $ref: "./components/schemas/auth.yml#/VerifyCodeBody"
+    LoginResponse:
+      $ref: "./components/schemas/auth.yml#/LoginResponse"
+    LoginRequest:
+      $ref: "./components/schemas/auth.yml#/LoginRequest"
+    UserTokenSchema:
+      $ref: "./components/schemas/auth.yml#/UserTokenSchema"
+  #------------------------------------------------------------------#
+  parameters:
+    offset:
+      $ref: "./components/parameters/general-parameter.yml#/offset"
+    limit:
+      $ref: "./components/parameters/general-parameter.yml#/limit"
+  #------------------------------------------------------------------#
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  #------------------------------------------------------------------#
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+externalDocs:
+  description: "More details"
+  url: "http://swagger.io"

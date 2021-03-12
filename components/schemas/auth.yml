@@ -1,0 +1,29 @@
+VerifyCodeBody:
+  type: object
+  properties:
+    username:
+      type: string
+    verifyCode:
+      type: string
+
+LoginResponse:
+  type: object
+  properties:
+    access_token:
+      type: string
+
+LoginRequest:
+  type: object
+  properties:
+    username:
+      type: string
+    password:
+      type: string
+
+UserTokenSchema:
+  type: object
+  properties:
+    username:
+      type: string
+    userRole:
+      type: string

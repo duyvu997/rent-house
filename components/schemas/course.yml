@@ -1,0 +1,68 @@
+Course:
+  type: "object"
+  properties:
+    name:
+      type: "string"
+    duration:
+      type: "string"
+    members:
+      type: "integer"
+      format: "int32"
+    authors:
+      type: "string"
+    courseImageUrl:
+      type: "string"
+
+GeneralCourse:
+  allOf:
+    - $ref: "#/Course"
+    - type: object
+      properties:
+        userCourseStatus:
+          type: "string"
+          enum: [NOT_REGISTER, PENDING]
+          description: >
+            Explanations: <br>
+            * `NOT_REGISTER` - user not register this course yet. <br>
+            * `PENDING` - user is waiting for approval to join this course.
+
+PersonalCourse:
+  allOf:
+    - $ref: "#/Course"
+    - type: object
+      properties:
+        userCourseProcess:
+          type: integer
+          maximum: 100
+          minimum: 0
+
+CoursesResponse:
+  type: array
+  items:
+    type: object
+    properties:
+      tagName:
+        type: string
+        enum: [BY-USER, POPULAR, NEWEST, ALL]
+      result:
+        type: array
+        items:
+          oneOf:
+            - $ref: "#/GeneralCourse"
+            - $ref: "#/PersonalCourse"
+
+CourseDetails:
+  type: object
+  properties:
+    id:
+      type: number
+    name:
+      type: string
+    title:
+      type: string
+    description:
+      type: string
+    lessons:
+      type: array
+      items:
+        $ref: "./lesson.yml#/Lesson"
